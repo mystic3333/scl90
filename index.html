@@ -1,1 +1,1116 @@
-hello world
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SCL-90心理测试</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css"
+      rel="stylesheet"
+    />
+
+    <!-- 自定义Tailwind配置 -->
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: "#3B82F6", // 蓝色作为主色调，传达信任和专业
+              secondary: "#10B981", // 绿色作为辅助色，传达成长和积极
+              accent: "#8B5CF6", // 紫色作为强调色，增加视觉趣味
+              neutral: "#1F2937", // 深灰色作为中性色
+            },
+            fontFamily: {
+              sans: ["Inter", "system-ui", "sans-serif"],
+            },
+          },
+        },
+      };
+    </script>
+
+    <!-- 自定义工具类 -->
+    <style type="text/tailwindcss">
+      @layer utilities {
+        .content-auto {
+          content-visibility: auto;
+        }
+        .text-shadow {
+          text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .transition-custom {
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+      }
+    </style>
+
+    <style>
+      /* 全局动画定义 */
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .animate-fadeIn {
+        animation: fadeIn 0.5s ease-out forwards;
+      }
+
+      @keyframes fadeOut {
+        from {
+          opacity: 1;
+          transform: translateY(0);
+        }
+        to {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
+      }
+
+      .animate-fadeOut {
+        animation: fadeOut 0.3s ease-in forwards;
+      }
+
+      /* 进度条动画 */
+      @keyframes progress {
+        from {
+          width: 0;
+        }
+        to {
+          width: var(--progress-width);
+        }
+      }
+
+      .progress-animation {
+        animation: progress 0.5s ease-out forwards;
+      }
+
+      /* 选项悬停效果 */
+      .option-hover {
+        transition: all 0.2s ease;
+      }
+
+      .option-hover:hover {
+        transform: translateX(4px);
+      }
+
+      /* 选项选中动画 */
+      .option-selected {
+        animation: pulse 0.3s ease-in-out;
+      }
+
+      @keyframes pulse {
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.02);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+
+      /* 雷达图容器确保有固定尺寸 */
+      #radarChartContainer {
+        min-height: 300px;
+        position: relative;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-50 font-sans text-neutral">
+    <!-- 顶部导航栏 -->
+    <header
+      class="fixed top-0 left-0 right-0 bg-white/90 backdrop-blur-sm shadow-sm z-50 transition-all duration-300"
+    >
+      <div
+        class="container mx-auto px-4 py-3 flex justify-between items-center"
+      >
+        <div class="flex items-center space-x-2">
+          <i class="fa fa-heart-o text-primary text-2xl"></i>
+          <h1 class="text-xl font-bold text-neutral">SCL-90心理测试</h1>
+        </div>
+        <nav>
+          <button
+            id="infoBtn"
+            class="text-gray-600 hover:text-primary transition-custom px-3 py-2 rounded-md"
+          >
+            <i class="fa fa-info-circle mr-1"></i> 关于测试
+          </button>
+        </nav>
+      </div>
+    </header>
+
+    <!-- 主内容区 -->
+    <main class="container mx-auto px-4 pt-24 pb-16 min-h-screen">
+      <!-- 欢迎页面 -->
+      <section
+        id="welcomePage"
+        class="max-w-3xl mx-auto text-center animate-fadeIn"
+      >
+        <div class="mb-8">
+          <div
+            class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-primary/10 text-primary mb-6"
+          >
+            <i class="fa fa-comments text-4xl"></i>
+          </div>
+          <h2 class="text-[clamp(1.8rem,5vw,3rem)] font-bold mb-4 text-shadow">
+            SCL-90 症状自评量表
+          </h2>
+          <p class="text-gray-600 text-lg mb-8">
+            这是一个广泛使用的心理健康自评工具，帮助您了解自己的心理状态
+          </p>
+        </div>
+
+        <div
+          class="bg-white rounded-xl shadow-lg p-6 mb-8 text-left transform hover:shadow-xl transition-custom"
+        >
+          <h3 class="text-xl font-semibold mb-4 flex items-center">
+            <i class="fa fa-info-circle text-primary mr-2"></i>测试说明
+          </h3>
+          <ul class="space-y-3 text-gray-600">
+            <li class="flex items-start">
+              <i class="fa fa-check-circle text-secondary mt-1 mr-2"></i>
+              <span>包含90个项目，评估您最近一周的心理状态</span>
+            </li>
+            <li class="flex items-start">
+              <i class="fa fa-check-circle text-secondary mt-1 mr-2"></i>
+              <span>每个项目有5个选项，从"没有"到"严重"</span>
+            </li>
+            <li class="flex items-start">
+              <i class="fa fa-check-circle text-secondary mt-1 mr-2"></i>
+              <span>选择答案后将自动跳转到下一题</span>
+            </li>
+            <li class="flex items-start">
+              <i class="fa fa-check-circle text-secondary mt-1 mr-2"></i>
+              <span>完成测试后，将为您提供详细的结果分析</span>
+            </li>
+            <li class="flex items-start">
+              <i class="fa fa-check-circle text-secondary mt-1 mr-2"></i>
+              <span>测试结果仅供参考，不构成诊断依据</span>
+            </li>
+          </ul>
+        </div>
+
+        <button
+          id="startTestBtn"
+          class="bg-primary hover:bg-primary/90 text-white font-medium py-3 px-8 rounded-full shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-custom text-lg"
+        >
+          开始测试
+          <i class="fa fa-arrow-right ml-2"></i>
+        </button>
+      </section>
+
+      <!-- 测试页面 -->
+      <section id="testPage" class="max-w-3xl mx-auto hidden">
+        <!-- 进度条 -->
+        <div class="mb-8">
+          <div class="flex justify-between text-sm text-gray-500 mb-2">
+            <span>进度</span>
+            <span id="progressText">1/90</span>
+          </div>
+          <div class="h-2 bg-gray-200 rounded-full overflow-hidden">
+            <div
+              id="progressBar"
+              class="h-full bg-primary rounded-full progress-animation"
+              style="--progress-width: 0%"
+            ></div>
+          </div>
+        </div>
+
+        <!-- 题目卡片 -->
+        <div
+          id="questionCard"
+          class="bg-white rounded-xl shadow-lg p-6 mb-8 animate-fadeIn transform hover:shadow-xl transition-custom"
+        >
+          <div class="flex justify-between items-start mb-6">
+            <h3 class="text-xl font-semibold text-neutral" id="questionNumber">
+              问题 1/90
+            </h3>
+            <span
+              class="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm font-medium"
+            >
+              <i class="fa fa-clock-o mr-1"></i>
+              <span id="timer">00:00</span>
+            </span>
+          </div>
+
+          <div class="mb-8">
+            <p class="text-lg text-gray-700 mb-6" id="questionText">头痛</p>
+
+            <div class="space-y-3" id="optionsContainer">
+              <!-- 选项将通过JS动态生成 -->
+            </div>
+          </div>
+        </div>
+
+        <!-- 导航按钮 -->
+        <div class="flex justify-start">
+          <button
+            id="prevBtn"
+            class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium py-2 px-6 rounded-full shadow hover:shadow-md transform hover:-translate-y-1 transition-custom disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:-translate-y-0"
+            disabled=""
+          >
+            <i class="fa fa-arrow-left mr-2"></i> 上一题
+          </button>
+        </div>
+      </section>
+
+      <!-- 结果页面 -->
+      <section id="resultPage" class="max-w-4xl mx-auto hidden">
+        <div class="text-center mb-10 animate-fadeIn">
+          <div
+            class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-secondary/10 text-secondary mb-6"
+          >
+            <i class="fa fa-bar-chart text-4xl"></i>
+          </div>
+          <h2
+            class="text-[clamp(1.5rem,4vw,2.5rem)] font-bold mb-4 text-shadow"
+          >
+            测试结果分析
+          </h2>
+          <p class="text-gray-600 text-lg">
+            以下是您的SCL-90测试结果分析，仅供参考
+          </p>
+        </div>
+
+        <!-- 总体评估 -->
+        <div
+          class="bg-white rounded-xl shadow-lg p-6 mb-8 animate-fadeIn"
+          style="animation-delay: 0.1s"
+        >
+          <h3 class="text-xl font-semibold mb-4 flex items-center">
+            <i class="fa fa-line-chart text-primary mr-2"></i>总体评估
+          </h3>
+          <div class="flex flex-col md:flex-row items-center justify-between">
+            <div class="mb-6 md:mb-0">
+              <p class="text-gray-600 mb-2">您的总体心理健康指数</p>
+              <div class="text-4xl font-bold text-primary" id="totalScore">
+                0
+              </div>
+            </div>
+            <div
+              class="w-full md:w-2/3 bg-gray-100 rounded-full p-4"
+              id="radarChartContainer"
+            >
+              <!-- 雷达图将在这里生成 -->
+              <div id="radarChart" class="w-full h-full"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 各因子得分 -->
+        <div
+          class="bg-white rounded-xl shadow-lg p-6 mb-8 animate-fadeIn"
+          style="animation-delay: 0.2s"
+        >
+          <h3 class="text-xl font-semibold mb-6 flex items-center">
+            <i class="fa fa-tasks text-primary mr-2"></i>各因子得分详情
+          </h3>
+
+          <div class="space-y-6" id="factorsContainer">
+            <!-- 因子得分将通过JS动态生成 -->
+          </div>
+        </div>
+
+        <!-- 建议 -->
+        <div
+          class="bg-white rounded-xl shadow-lg p-6 mb-8 animate-fadeIn"
+          style="animation-delay: 0.3s"
+        >
+          <h3 class="text-xl font-semibold mb-4 flex items-center">
+            <i class="fa fa-lightbulb-o text-primary mr-2"></i>建议
+          </h3>
+          <p class="text-gray-600 mb-4" id="suggestionText">
+            根据您的测试结果，建议您保持积极的生活态度，适当运动，保持良好的作息习惯。如感到不适，建议寻求专业心理咨询师的帮助。
+          </p>
+          <div class="bg-primary/5 p-4 rounded-lg border-l-4 border-primary">
+            <p class="text-gray-700 text-sm">
+              <i class="fa fa-info-circle text-primary mr-1"></i>
+              注意：本测试结果仅供参考，不能作为诊断依据。如有严重心理困扰，请及时寻求专业医疗帮助。
+            </p>
+          </div>
+        </div>
+
+        <div class="text-center">
+          <button
+            id="restartBtn"
+            class="bg-primary hover:bg-primary/90 text-white font-medium py-3 px-8 rounded-full shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-custom text-lg"
+          >
+            重新测试
+            <i class="fa fa-refresh ml-2"></i>
+          </button>
+        </div>
+      </section>
+    </main>
+
+    <!-- 关于测试模态框 -->
+    <div
+      id="infoModal"
+      class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden items-center justify-center p-4"
+    >
+      <div
+        class="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[80vh] overflow-y-auto p-6 animate-fadeIn"
+      >
+        <div class="flex justify-between items-center mb-4">
+          <h3 class="text-xl font-bold">关于SCL-90测试</h3>
+          <button id="closeInfoBtn" class="text-gray-500 hover:text-gray-700">
+            <i class="fa fa-times text-xl"></i>
+          </button>
+        </div>
+
+        <div class="space-y-4 text-gray-600">
+          <p>
+            SCL-90（Symptom Checklist
+            90）是一种广泛使用的心理健康自评量表，包含90个项目，涉及感觉、情感、思维、意识、行为直至生活习惯、人际关系、饮食睡眠等多个方面。
+          </p>
+
+          <p>该量表包含10个因子：</p>
+          <ul class="list-disc pl-5 space-y-1">
+            <li>躯体化：反映身体上的不适症状</li>
+            <li>强迫症状：反映强迫思维和行为</li>
+            <li>人际关系敏感：反映人际交往中的不自在和自卑感</li>
+            <li>抑郁：反映抑郁情绪和相关症状</li>
+            <li>焦虑：反映焦虑情绪和相关症状</li>
+            <li>敌对：反映敌对的思想、情感和行为</li>
+            <li>恐怖：反映恐怖症状</li>
+            <li>偏执：反映偏执性思维</li>
+            <li>精神病性：反映精神病性症状</li>
+            <li>其他：反映睡眠和饮食等方面的问题</li>
+          </ul>
+
+          <p>每个项目按1-5级评分：1=没有，2=很轻，3=中等，4=偏重，5=严重。</p>
+
+          <p>
+            测试结果仅供参考，不能作为诊断依据。如有严重心理困扰，请及时寻求专业医疗帮助。
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer class="bg-white border-t border-gray-200 py-6">
+      <div class="container mx-auto px-4 text-center text-gray-500 text-sm">
+        <p>© 2023 SCL-90心理测试 | 本测试结果仅供参考，不构成诊断依据</p>
+        <p class="mt-2">如有心理困扰，请寻求专业心理咨询师帮助</p>
+      </div>
+    </footer>
+
+    <script>
+      // 定义总问题数量常量
+      const TOTAL_QUESTIONS = 90;
+
+      // SCL-90完整90题题目数据
+      const questions = [
+        // 躯体化 (12题)
+        { id: 1, text: "头痛", factor: "躯体化" },
+        { id: 2, text: "神经过敏，心中不踏实", factor: "躯体化" },
+        { id: 4, text: "头晕或晕倒", factor: "躯体化" },
+        { id: 12, text: "胸痛", factor: "躯体化" },
+        { id: 29, text: "心跳得很厉害", factor: "躯体化" },
+        { id: 30, text: "恶心或胃部不舒服", factor: "躯体化" },
+        { id: 31, text: "感到吞咽困难", factor: "躯体化" },
+        { id: 32, text: "呼吸困难", factor: "躯体化" },
+        { id: 33, text: "一阵阵发冷或发热", factor: "躯体化" },
+        {
+          id: 34,
+          text: "因为感到害怕而避开某些东西、场合或活动",
+          factor: "躯体化",
+        },
+        { id: 35, text: "感到坐立不安心神不定", factor: "躯体化" },
+        { id: 36, text: "感到比平常容易紧张和着急", factor: "躯体化" },
+
+        // 强迫症状 (10题)
+        { id: 3, text: "头脑中有不必要的想法或字句盘旋", factor: "强迫症状" },
+        { id: 10, text: "担心自己的衣饰整齐及仪态的端正", factor: "强迫症状" },
+        { id: 28, text: "做事必须做得很慢以保证做得正确", factor: "强迫症状" },
+        { id: 38, text: "做事必须反复检查", factor: "强迫症状" },
+        { id: 45, text: "难以做出决定", factor: "强迫症状" },
+        { id: 46, text: "脑子变空了", factor: "强迫症状" },
+        { id: 47, text: "做事不能集中注意力", factor: "强迫症状" },
+        { id: 50, text: "反复想些无意义的事", factor: "强迫症状" },
+        { id: 51, text: "注意力不能集中", factor: "强迫症状" },
+        { id: 78, text: "感到自己的身体有严重问题", factor: "强迫症状" },
+
+        // 人际关系敏感 (9题)
+        { id: 6, text: "对旁人责备求全", factor: "人际关系敏感" },
+        { id: 21, text: "同异性相处时感到害羞不自在", factor: "人际关系敏感" },
+        { id: 26, text: "感到别人不理解您、不同情您", factor: "人际关系敏感" },
+        {
+          id: 27,
+          text: "感到人们对您不友好、不喜欢您",
+          factor: "人际关系敏感",
+        },
+        { id: 52, text: "感到有人在监视您、谈论您", factor: "人际关系敏感" },
+        { id: 53, text: "别人能控制您的思想", factor: "人际关系敏感" },
+        { id: 61, text: "感到对别人神经过敏", factor: "人际关系敏感" },
+        {
+          id: 69,
+          text: "感到在公共场合吃东西很不舒服",
+          factor: "人际关系敏感",
+        },
+        { id: 73, text: "感到别人想占您的便宜", factor: "人际关系敏感" },
+
+        // 抑郁 (13题)
+        { id: 14, text: "感到自己的精力下降，活动减慢", factor: "抑郁" },
+        { id: 15, text: "想结束自己的生命", factor: "抑郁" },
+        { id: 20, text: "容易哭泣", factor: "抑郁" },
+        { id: 22, text: "感到受骗，中了圈套或有人想抓住您", factor: "抑郁" },
+        { id: 24, text: "自己不能控制地大发脾气", factor: "抑郁" },
+        { id: 54, text: "想到死亡的事", factor: "抑郁" },
+        { id: 55, text: "感到大多数人都不可信任", factor: "抑郁" },
+        { id: 60, text: "感到熟悉的东西变成陌生或不像是真的", factor: "抑郁" },
+        { id: 64, text: "感到自己没有什么价值", factor: "抑郁" },
+        { id: 66, text: "感到事情做不完", factor: "抑郁" },
+        { id: 71, text: "感到自己的脑子有毛病", factor: "抑郁" },
+        { id: 79, text: "感到紧张或容易紧张", factor: "抑郁" },
+        { id: 90, text: "感到自己的存在没有意义", factor: "抑郁" },
+
+        // 焦虑 (10题)
+        { id: 11, text: "容易烦恼和激动", factor: "焦虑" },
+        { id: 17, text: "发抖", factor: "焦虑" },
+        { id: 23, text: "无缘无故地突然感到害怕", factor: "焦虑" },
+        { id: 39, text: "难以入睡", factor: "焦虑" },
+        { id: 40, text: "睡得不稳不深", factor: "焦虑" },
+        { id: 42, text: "感到害怕", factor: "焦虑" },
+        { id: 56, text: "感到坐立不安心神不定", factor: "焦虑" },
+        { id: 58, text: "感到要很快把事情做完", factor: "焦虑" },
+        { id: 62, text: "感到害怕", factor: "焦虑" },
+        { id: 74, text: "为一些有关性的想法而很苦恼", factor: "焦虑" },
+
+        // 敌对 (6题)
+        { id: 8, text: "责怪别人制造麻烦", factor: "敌对" },
+        { id: 18, text: "感到大多数人都不可信任", factor: "敌对" },
+        { id: 43, text: "有想打人或伤害他人的冲动", factor: "敌对" },
+        { id: 57, text: "有想摔坏或破坏东西的冲动", factor: "敌对" },
+        { id: 63, text: "有想打人或伤害他人的冲动", factor: "敌对" },
+        { id: 67, text: "有想摔坏或破坏东西的冲动", factor: "敌对" },
+
+        // 恐怖 (7题)
+        { id: 13, text: "害怕空旷的场所或街道", factor: "恐怖" },
+        { id: 25, text: "怕单独出门", factor: "恐怖" },
+        { id: 41, text: "有想伤害他人的冲动", factor: "恐怖" },
+        { id: 59, text: "感到对别人神经过敏", factor: "恐怖" },
+        { id: 65, text: "当别人看着您或谈论您时感到不自在", factor: "恐怖" },
+        { id: 70, text: "感到在公共场合吃东西很不舒服", factor: "恐怖" },
+        { id: 72, text: "感到任何事情都很困难", factor: "恐怖" },
+
+        // 偏执 (6题)
+        { id: 7, text: "感到别人能控制您的思想", factor: "偏执" },
+        { id: 19, text: "胃口不好", factor: "偏执" },
+        { id: 44, text: "醒得太早", factor: "偏执" },
+        { id: 68, text: "有一些不属于您自己的想法", factor: "偏执" },
+        { id: 75, text: "您认为应该因为自己的过错而受到惩罚", factor: "偏执" },
+        { id: 83, text: "感到自己的身体有严重问题", factor: "偏执" },
+
+        // 精神病性 (10题)
+        { id: 16, text: "听到旁人听不到的声音", factor: "精神病性" },
+        { id: 37, text: "一阵阵恐惧或惊恐", factor: "精神病性" },
+        { id: 48, text: "回忆往事感到很痛苦", factor: "精神病性" },
+        { id: 49, text: "感到要赶快把事情做完", factor: "精神病性" },
+        { id: 76, text: "感到自己的身体有严重问题", factor: "精神病性" },
+        { id: 77, text: "感到自己的身体有严重问题", factor: "精神病性" },
+        {
+          id: 80,
+          text: "感到熟悉的东西变得陌生或不像是真的",
+          factor: "精神病性",
+        },
+        { id: 81, text: "大叫或摔东西", factor: "精神病性" },
+        { id: 82, text: "害怕会在公共场合晕倒", factor: "精神病性" },
+        { id: 84, text: "为一些有关性的想法而很苦恼", factor: "精神病性" },
+
+        // 其他 (7题)
+        { id: 5, text: "对异性的兴趣减退", factor: "其他" },
+        { id: 9, text: "忘记性大", factor: "其他" },
+        { id: 85, text: "您认为应该因为自己的过错而受到惩罚", factor: "其他" },
+        { id: 86, text: "感到要很快把事情做完", factor: "其他" },
+        { id: 87, text: "感到自己的身体有严重问题", factor: "其他" },
+        { id: 88, text: "从未感到和其他人很亲近", factor: "其他" },
+        { id: 89, text: "感到自己有罪", factor: "其他" },
+      ];
+
+      // 因子信息
+      const factors = {
+        躯体化: { description: "反映身体上的不适症状，如头痛、胸痛、腰痛等" },
+        强迫症状: {
+          description: "反映强迫思维和行为，如不必要的想法盘旋、担心仪态等",
+        },
+        人际关系敏感: { description: "反映人际交往中的不自在和自卑感" },
+        抑郁: {
+          description: "反映抑郁情绪和相关症状，如感到孤独、苦闷、想结束生命等",
+        },
+        焦虑: {
+          description: "反映焦虑情绪和相关症状，如神经过敏、无缘无故害怕等",
+        },
+        敌对: {
+          description: "反映敌对的思想、情感和行为，如责怪别人、大发脾气等",
+        },
+        恐怖: { description: "反映恐怖症状，如害怕空旷场所、怕单独出门等" },
+        偏执: {
+          description: "反映偏执性思维，如感到别人能控制您的思想、感到受骗等",
+        },
+        精神病性: { description: "反映精神病性症状，如听到旁人听不到的声音等" },
+        其他: {
+          description: "反映睡眠和饮食等方面的问题，如忘记性大、胃口不好等",
+        },
+      };
+
+      // DOM元素
+      const welcomePage = document.getElementById("welcomePage");
+      const testPage = document.getElementById("testPage");
+      const resultPage = document.getElementById("resultPage");
+      const startTestBtn = document.getElementById("startTestBtn");
+      const prevBtn = document.getElementById("prevBtn");
+      const restartBtn = document.getElementById("restartBtn");
+      const questionNumber = document.getElementById("questionNumber");
+      const questionText = document.getElementById("questionText");
+      const optionsContainer = document.getElementById("optionsContainer");
+      const progressBar = document.getElementById("progressBar");
+      const progressText = document.getElementById("progressText");
+      const timer = document.getElementById("timer");
+      const totalScore = document.getElementById("totalScore");
+      const factorsContainer = document.getElementById("factorsContainer");
+      const suggestionText = document.getElementById("suggestionText");
+      const infoBtn = document.getElementById("infoBtn");
+      const infoModal = document.getElementById("infoModal");
+      const closeInfoBtn = document.getElementById("closeInfoBtn");
+      const questionCard = document.getElementById("questionCard");
+      const radarChart = document.getElementById("radarChart");
+      const radarChartContainer = document.getElementById(
+        "radarChartContainer"
+      );
+
+      // 测试状态
+      let currentQuestionIndex = 0;
+      let answers = {};
+      let startTime = null;
+      let timerInterval = null;
+      let totalTime = 0;
+      let isProcessing = false; // 防止重复提交
+
+      // 初始化选项并添加点击事件
+      function initOptions() {
+        optionsContainer.innerHTML = "";
+        const options = [
+          { value: 1, text: "没有" },
+          { value: 2, text: "很轻" },
+          { value: 3, text: "中等" },
+          { value: 4, text: "偏重" },
+          { value: 5, text: "严重" },
+        ];
+
+        options.forEach((option) => {
+          const div = document.createElement("div");
+          div.className = "relative option-hover";
+          div.innerHTML = `
+            <input type="radio" id="option${
+              option.value
+            }" name="question" value="${option.value}" 
+                   class="peer sr-only" ${
+                     answers[questions[currentQuestionIndex].id] == option.value
+                       ? "checked"
+                       : ""
+                   }>
+            <label for="option${option.value}" 
+                   class="block w-full p-4 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 
+                          peer-checked:border-primary peer-checked:bg-primary/5 transition-custom">
+              <span class="font-medium">${option.text}</span>
+              <span class="absolute right-4 top-1/2 -translate-y-1/2 text-primary opacity-0 peer-checked:opacity-100 transition-custom">
+                <i class="fa fa-check-circle"></i>
+              </span>
+            </label>
+          `;
+          optionsContainer.appendChild(div);
+
+          // 为每个选项添加点击事件
+          const input = div.querySelector("input");
+          input.addEventListener("change", handleOptionSelect);
+        });
+      }
+
+      // 处理选项选择
+      function handleOptionSelect() {
+        if (isProcessing) return;
+        isProcessing = true;
+
+        // 添加强调动画
+        const selectedLabel = this.nextElementSibling;
+        selectedLabel.classList.add("option-selected");
+
+        // 保存答案
+        saveAnswer();
+
+        // 短暂延迟后跳转，让用户看到选择效果
+        setTimeout(() => {
+          if (currentQuestionIndex < TOTAL_QUESTIONS - 1) {
+            // 显示淡出动画
+            questionCard.classList.add("animate-fadeOut");
+
+            // 动画结束后更新题目
+            setTimeout(() => {
+              currentQuestionIndex++;
+              updateQuestion();
+              // 移除淡出动画类，准备下次使用
+              questionCard.classList.remove("animate-fadeOut");
+              isProcessing = false;
+            }, 300);
+          } else {
+            // 完成测试，显示结果
+            finishTest();
+          }
+        }, 500);
+      }
+
+      // 更新当前题目
+      function updateQuestion() {
+        // 检查当前题目是否存在
+        if (!questions[currentQuestionIndex]) {
+          console.error("题目数据不存在", currentQuestionIndex);
+          alert("题目加载错误，请刷新页面重试");
+          return;
+        }
+
+        const question = questions[currentQuestionIndex];
+        // 使用总题数常量显示问题编号
+        questionNumber.textContent = `问题 ${
+          currentQuestionIndex + 1
+        }/${TOTAL_QUESTIONS}`;
+        questionText.textContent = question.text;
+
+        // 初始化选项
+        initOptions();
+
+        // 更新进度，使用总题数计算百分比
+        const progress = ((currentQuestionIndex + 1) / TOTAL_QUESTIONS) * 100;
+        progressBar.style.setProperty("--progress-width", `${progress}%`);
+        progressText.textContent = `${
+          currentQuestionIndex + 1
+        }/${TOTAL_QUESTIONS}`;
+
+        // 更新按钮状态
+        prevBtn.disabled = currentQuestionIndex === 0;
+      }
+
+      // 开始测试
+      function startTest() {
+        // 验证题目数量是否正确
+        if (questions.length !== TOTAL_QUESTIONS) {
+          console.error(
+            `题目数量不正确: 实际${questions.length}题，应为${TOTAL_QUESTIONS}题`
+          );
+        }
+
+        welcomePage.classList.add("hidden");
+        testPage.classList.remove("hidden");
+
+        currentQuestionIndex = 0;
+        answers = {};
+        updateQuestion();
+
+        // 开始计时
+        startTime = new Date();
+        if (timerInterval) clearInterval(timerInterval);
+        timerInterval = setInterval(updateTimer, 1000);
+      }
+
+      // 更新计时器
+      function updateTimer() {
+        const now = new Date();
+        totalTime = Math.floor((now - startTime) / 1000);
+        const minutes = Math.floor(totalTime / 60)
+          .toString()
+          .padStart(2, "0");
+        const seconds = (totalTime % 60).toString().padStart(2, "0");
+        timer.textContent = `${minutes}:${seconds}`;
+      }
+
+      // 上一题
+      function prevQuestion() {
+        if (currentQuestionIndex > 0 && !isProcessing) {
+          isProcessing = true;
+          // 显示淡出动画
+          questionCard.classList.add("animate-fadeOut");
+
+          setTimeout(() => {
+            currentQuestionIndex--;
+            updateQuestion();
+            questionCard.classList.remove("animate-fadeOut");
+            isProcessing = false;
+          }, 300);
+        }
+      }
+
+      // 保存答案
+      function saveAnswer() {
+        const selectedOption = document.querySelector(
+          'input[name="question"]:checked'
+        );
+        if (selectedOption) {
+          answers[questions[currentQuestionIndex].id] = parseInt(
+            selectedOption.value
+          );
+        }
+      }
+
+      // 完成测试，计算结果
+      function finishTest() {
+        // 停止计时器
+        clearInterval(timerInterval);
+
+        // 计算各因子得分
+        const factorScores = {};
+        const factorCounts = {};
+
+        // 初始化因子得分和计数
+        Object.keys(factors).forEach((factor) => {
+          factorScores[factor] = 0;
+          factorCounts[factor] = 0;
+        });
+
+        // 计算得分
+        questions.forEach((question) => {
+          if (answers[question.id]) {
+            factorScores[question.factor] += answers[question.id];
+            factorCounts[question.factor]++;
+          }
+        });
+
+        // 计算平均分
+        const factorAverages = {};
+        Object.keys(factorScores).forEach((factor) => {
+          factorAverages[factor] =
+            factorCounts[factor] > 0
+              ? (factorScores[factor] / factorCounts[factor]).toFixed(1)
+              : 0;
+        });
+
+        // 计算总分
+        let total = 0;
+        Object.values(factorScores).forEach((score) => {
+          total += score;
+        });
+
+        // 显示结果
+        displayResults(total, factorAverages);
+
+        // 切换到结果页面
+        testPage.classList.add("hidden");
+        resultPage.classList.remove("hidden");
+        // 滚动到顶部
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+
+      // 显示结果
+      function displayResults(totalScoreValue, factorAverages) {
+        // 显示总分
+        totalScore.textContent = totalScoreValue;
+
+        // 显示各因子得分
+        factorsContainer.innerHTML = "";
+
+        Object.keys(factorAverages).forEach((factor) => {
+          const score = parseFloat(factorAverages[factor]);
+          let colorClass = "bg-green-500"; // 低
+          if (score > 2 && score <= 3) colorClass = "bg-yellow-500"; // 中
+          else if (score > 3) colorClass = "bg-red-500"; // 高
+
+          const div = document.createElement("div");
+          div.className = "mb-6 last:mb-0";
+          div.innerHTML = `
+            <div class="flex justify-between items-center mb-2">
+              <div>
+                <h4 class="font-medium">${factor}</h4>
+                <p class="text-sm text-gray-500">${
+                  factors[factor].description
+                }</p>
+              </div>
+              <span class="text-lg font-semibold ${
+                score > 3 ? "text-red-500" : ""
+              }">${score}</span>
+            </div>
+            <div class="h-2 bg-gray-200 rounded-full overflow-hidden">
+              <div class="${colorClass} h-full rounded-full transition-all duration-1000 ease-out" 
+                   style="width: ${(score / 5) * 100}%"></div>
+            </div>
+            <div class="flex justify-between text-xs text-gray-500 mt-1">
+              <span>低</span>
+              <span>中</span>
+              <span>高</span>
+            </div>
+          `;
+          factorsContainer.appendChild(div);
+        });
+
+        // 生成建议
+        generateSuggestion(factorAverages);
+
+        // 确保容器有正确尺寸后再绘制雷达图
+        setTimeout(() => {
+          drawRadarChart(factorAverages);
+        }, 100);
+      }
+
+      // 生成建议
+      function generateSuggestion(factorAverages) {
+        // 找出得分最高的因子
+        let maxFactor = "";
+        let maxScore = 0;
+
+        Object.keys(factorAverages).forEach((factor) => {
+          const score = parseFloat(factorAverages[factor]);
+          if (score > maxScore) {
+            maxScore = score;
+            maxFactor = factor;
+          }
+        });
+
+        // 根据最高得分因子生成建议
+        let suggestion = "";
+
+        if (maxScore <= 2) {
+          suggestion =
+            "您的测试结果显示心理状态良好。建议保持现有的生活方式和心态，继续保持积极健康的生活态度。";
+        } else if (maxScore <= 3) {
+          suggestion = `您在${maxFactor}方面有一些轻微的困扰。建议您尝试放松训练，适当运动，保持良好的作息，如果情况持续或加重，可考虑寻求专业帮助。`;
+        } else {
+          suggestion = `您在${maxFactor}方面存在较明显的困扰。建议您重视这些症状，及时寻求专业心理咨询师或医生的帮助，进行进一步的评估和干预。`;
+        }
+
+        suggestionText.textContent = suggestion;
+      }
+
+      // 绘制雷达图 - 修复版
+      function drawRadarChart(factorAverages) {
+        try {
+          // 清空容器
+          radarChart.innerHTML = "";
+
+          // 获取容器尺寸，确保有默认值
+          const containerWidth = radarChartContainer.clientWidth || 400;
+          const containerHeight = radarChartContainer.clientHeight || 300;
+          const width = containerWidth;
+          const height = containerHeight;
+          const centerX = width / 2;
+          const centerY = height / 2;
+          const radius = Math.min(width, height) / 2 - 20;
+
+          // 创建SVG元素
+          const svg = document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "svg"
+          );
+          svg.setAttribute("width", "100%");
+          svg.setAttribute("height", "100%");
+          svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
+          svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
+          radarChart.appendChild(svg);
+
+          // 获取因子列表
+          const factorsList = Object.keys(factorAverages);
+          const factorCount = factorsList.length;
+          const angleStep = (2 * Math.PI) / factorCount;
+
+          // 绘制网格线
+          for (let i = 1; i <= 5; i++) {
+            const r = (radius / 5) * i;
+            const polygon = document.createElementNS(
+              "http://www.w3.org/2000/svg",
+              "polygon"
+            );
+            let points = "";
+
+            for (let j = 0; j < factorCount; j++) {
+              const angle = angleStep * j - Math.PI / 2;
+              const x = centerX + r * Math.cos(angle);
+              const y = centerY + r * Math.sin(angle);
+              points += `${x},${y} `;
+            }
+
+            polygon.setAttribute("points", points);
+            polygon.setAttribute(
+              "fill",
+              i % 2 === 0
+                ? "rgba(240, 240, 240, 0.5)"
+                : "rgba(245, 245, 245, 0.5)"
+            );
+            polygon.setAttribute("stroke", "#e0e0e0");
+            svg.appendChild(polygon);
+          }
+
+          // 绘制轴线
+          for (let j = 0; j < factorCount; j++) {
+            const angle = angleStep * j - Math.PI / 2;
+            const x = centerX + radius * Math.cos(angle);
+            const y = centerY + radius * Math.sin(angle);
+
+            const line = document.createElementNS(
+              "http://www.w3.org/2000/svg",
+              "line"
+            );
+            line.setAttribute("x1", centerX);
+            line.setAttribute("y1", centerY);
+            line.setAttribute("x2", x);
+            line.setAttribute("y2", y);
+            line.setAttribute("stroke", "#e0e0e0");
+            svg.appendChild(line);
+          }
+
+          // 绘制数据点和连接线
+          let dataPoints = "";
+
+          for (let j = 0; j < factorCount; j++) {
+            const factor = factorsList[j];
+            const score = parseFloat(factorAverages[factor]);
+            const r = (radius / 5) * score;
+            const angle = angleStep * j - Math.PI / 2;
+            const x = centerX + r * Math.cos(angle);
+            const y = centerY + r * Math.sin(angle);
+
+            dataPoints += `${x},${y} `;
+
+            // 绘制数据点
+            const circle = document.createElementNS(
+              "http://www.w3.org/2000/svg",
+              "circle"
+            );
+            circle.setAttribute("cx", x);
+            circle.setAttribute("cy", y);
+            circle.setAttribute("r", 4);
+            circle.setAttribute("fill", "#3B82F6");
+            circle.setAttribute("stroke", "white");
+            circle.setAttribute("stroke-width", "2");
+            svg.appendChild(circle);
+
+            // 添加因子标签
+            const label = document.createElementNS(
+              "http://www.w3.org/2000/svg",
+              "text"
+            );
+            const labelRadius = radius + 15; // 标签位置在雷达图外侧
+            const labelX = centerX + labelRadius * Math.cos(angle);
+            const labelY = centerY + labelRadius * Math.sin(angle);
+
+            label.setAttribute("x", labelX);
+            label.setAttribute("y", labelY);
+            label.setAttribute("text-anchor", "middle");
+            label.setAttribute("dominant-baseline", "middle");
+            label.setAttribute("font-size", "12");
+            label.setAttribute("fill", "#666");
+            label.textContent = factor;
+            svg.appendChild(label);
+          }
+
+          // 绘制连接线
+          const dataPolygon = document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "polygon"
+          );
+          dataPolygon.setAttribute("points", dataPoints);
+          dataPolygon.setAttribute("fill", "rgba(59, 130, 246, 0.2)");
+          dataPolygon.setAttribute("stroke", "#3B82F6");
+          dataPolygon.setAttribute("stroke-width", "2");
+          svg.insertBefore(dataPolygon, svg.firstChild);
+
+          console.log("雷达图绘制成功");
+        } catch (error) {
+          console.error("雷达图绘制失败:", error);
+          // 显示错误信息
+          radarChart.innerHTML = `
+            <div class="flex items-center justify-center h-full text-gray-500">
+              <i class="fa fa-exclamation-triangle mr-2"></i>
+              <span>图表加载失败，请刷新页面重试</span>
+            </div>
+          `;
+        }
+      }
+
+      // 重新测试
+      function restartTest() {
+        resultPage.classList.add("hidden");
+        welcomePage.classList.remove("hidden");
+        // 滚动到顶部
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+
+      // 显示关于测试模态框
+      function showInfoModal() {
+        infoModal.classList.remove("hidden");
+        infoModal.classList.add("flex");
+        document.body.style.overflow = "hidden";
+      }
+
+      // 关闭关于测试模态框
+      function closeInfoModal() {
+        infoModal.classList.add("hidden");
+        infoModal.classList.remove("flex");
+        document.body.style.overflow = "";
+      }
+
+      // 事件监听
+      startTestBtn.addEventListener("click", startTest);
+      prevBtn.addEventListener("click", prevQuestion);
+      restartBtn.addEventListener("click", restartTest);
+      infoBtn.addEventListener("click", showInfoModal);
+      closeInfoBtn.addEventListener("click", closeInfoModal);
+
+      // 点击模态框外部关闭
+      infoModal.addEventListener("click", (e) => {
+        if (e.target === infoModal) {
+          closeInfoModal();
+        }
+      });
+
+      // 键盘导航
+      document.addEventListener("keydown", (e) => {
+        if (testPage.classList.contains("hidden") || isProcessing) return;
+
+        if (e.key === "ArrowLeft") {
+          prevQuestion();
+        } else if (e.key >= "1" && e.key <= "5") {
+          // 数字键选择选项
+          const option = document.querySelector(`input[value="${e.key}"]`);
+          if (option && !option.checked) {
+            option.checked = true;
+            // 触发change事件
+            const event = new Event("change");
+            option.dispatchEvent(event);
+          }
+        }
+      });
+
+      // 窗口大小变化时重新绘制雷达图
+      window.addEventListener("resize", () => {
+        if (!resultPage.classList.contains("hidden")) {
+          // 重新计算因子得分并绘制雷达图
+          const factorAverages = JSON.parse(
+            sessionStorage.getItem("lastFactorAverages")
+          );
+          if (factorAverages) {
+            drawRadarChart(factorAverages);
+          }
+        }
+      });
+
+      // 滚动时改变导航栏样式
+      window.addEventListener("scroll", () => {
+        const header = document.querySelector("header");
+        if (window.scrollY > 10) {
+          header.classList.add("py-2", "shadow");
+          header.classList.remove("py-3", "shadow-sm");
+        } else {
+          header.classList.add("py-3", "shadow-sm");
+          header.classList.remove("py-2", "shadow");
+        }
+      });
+
+      // 初始化时检查题目数量
+      console.log(`初始化题目数量: ${questions.length}/${TOTAL_QUESTIONS}`);
+    </script>
+  </body>
+</html>
